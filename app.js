@@ -1,46 +1,43 @@
 //CLASE
 function _on(c, f){
-  var obj = {c,f};
+  
+  var obj = {'char' : c, 'f' : f };
   this.dictionary.push(obj);
   
 }
 
-function _run(testString){
-    var index;
-    var countA=0,countB=0,countD=0;
+function findElement(char, dic){
+    var count = 0;
+    for(var item in dic){
+        
+        if (dic[item].char == char) 
+            return count;
 
+        count ++;
+    }   
+    
+    return -1;
+}
+
+
+
+function _run(testString){
+    
    for(var element in testString){
        element = testString[element];
-        //add elemente to the dictionary
-        if (element == 'a' || element == 'c'){
-            this.on(element, function() { console.log('char: ' +  element)});   
-            //counts
-            if  (element == 'a')
-                countA++
-            if  (element == 'c')
-                countB++
-                
-        }else{
-            try{
-                index = this.dic.indexOf(element); //h
-                console.log(index);
-                if (index !=  -1) { //found
-                    this.dic[index][element](); //run function               
+                   
+            try{                
+                index = findElement(element, this.dictionary )                
+                if (index !=  -1) { //found                                       
+                    this.dictionary[index].f(); //run function                                
                 }  else { //not found
-                    this.onDefault(element); //run default
-                    //counts                
-                    countD++                
+                    this.onDefault(); //run default                                                   
                 }
             } catch (err) {
-                countD++                
+                // ...
             }
             
-            
-        }       
-
     } //end for
-
-    return [countA,countB,countD];
 
 }
 
@@ -48,31 +45,45 @@ function _run(testString){
 function Tokenizer(){    
     this.dictionary = [];      
     this.run =_run;
-    this.on = _on;
-    this.onDefault = function(char) { console.log('not found' + char)};    
+    this.on = _on;    
+    this.onDefault;
 }
 
 
 
 //TEST
 function testTokenizer(){
-  
+    var countA=0;
+    var countC=0;
+    var countD=0;
+
   var t = new Tokenizer;
   var counts = [];
   var testString = ['H','o','l','a',' ','c','o','m',' ','a','n','e','u','?']; 
-  counts = t.run(testString);
-  
-  //test add element
-  t.on('x', function(char) { console.log('char x')});
-  
-  //test element not found
-  t.onDefault('y');
+    
+  //add elements to the dictionary
+    t.on('a', function(){
+      countA++;      
+    });    
+
+    t.on('c', function(){
+       countC++;
+    });
+    
+    //test element not found
+    t.onDefault = function(){
+        console.log("here");
+        countD++;
+    };
 
   //here goes the code to run the test over testString
+  counts = t.run(testString);
+
+  console.log("numero de a's: " + countA);
+  console.log("numero de c's: " + countC);
+  console.log("numero d'altres caracters: " + countD);
   
-  console.log("numero de a's: " + counts[0]);
-  console.log("numero de c's: " + counts[1]);
-  console.log("numero d'altres caracters: " + counts[2]);
+  
 }
 
 testTokenizer();
